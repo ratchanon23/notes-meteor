@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { Link } from 'react-router'
 import { Accounts } from 'meteor/accounts-base'
+import { createContainer } from 'meteor/react-meteor-data'
 
-class Signup extends Component {
+export class Signup extends Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -20,7 +22,7 @@ class Signup extends Component {
             return this.setState({error: 'Password must be morethan 8 character long.'})
         }
 
-        Accounts.createUser({email, password}, (err) => {
+        this.props.createUser({email, password}, (err) => {
             if(err) {
                 this.setState({
                     error: err.reason
@@ -51,4 +53,12 @@ class Signup extends Component {
     }
 }
 
-export default Signup
+Signup.PropTypes = {
+    createUser: PropTypes.func.isRequired
+}
+
+export default createContainer(() => {
+    return {
+        createUser: Accounts.createUser
+    }
+}, Signup)
